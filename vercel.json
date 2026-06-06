@@ -1,9 +1,0 @@
-{
-  "version": 2,
-  "framework": null,
-  "buildCommand": "bash build_files.sh",
-  "outputDirectory": "staticfiles_build",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index" }
-  ]
-}
