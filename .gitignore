@@ -1,0 +1,15 @@
+*.pyc
+__pycache__/
+*.log
+*.pot
+*.py[cod]
+*.sqlite3
+*.env
+.env.*
+venv/
+.env
+.DS_Store
+node_modules/
+.Python
+coverage/
+htmlcov/

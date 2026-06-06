@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "Invoice Backend APIs",
+    "description": "Postman collection for testing the Django Invoicing Backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"phone_number\": \"1234567890\",\n  \"name\": \"Test User\",\n  \"password\": \"strongpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "auth", "register", "" ]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.access);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"strongpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "auth", "login", "" ]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "auth", "profile", "" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "admin", "users", "" ]
+            }
+          }
+        },
+        {
+          "name": "Approve User",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/1/approve/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "admin", "users", "1", "approve", "" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "item": [
+        {
+          "name": "Create Goods Item",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Office Laptop\",\n  \"type\": \"Goods\",\n  \"hsn\": \"123456\",\n  \"taxable\": true,\n  \"price\": 1200.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/items/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "items", "" ]
+            }
+          }
+        },
+        {
+          "name": "Create Service Item",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Consulting Services\",\n  \"type\": \"Service\",\n  \"sac\": \"654321\",\n  \"taxable\": false,\n  \"price\": 500.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/items/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "items", "" ]
+            }
+          }
+        },
+        {
+          "name": "Get All Items",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/items/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "items", "" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "Create Invoice",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"0987654321\",\n  \"address\": \"123 Main St\",\n  \"date\": \"2026-06-06\",\n  \"items\": [\n    {\n      \"item_id\": 1,\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "invoices", "" ]
+            }
+          }
+        },
+        {
+          "name": "Get All Invoices",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/invoices/",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "invoices", "" ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
