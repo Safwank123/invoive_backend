@@ -1,16 +1,10 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
-import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECRET_KEY: use env var if set, otherwise generate random for development
-if 'SECRET_KEY' in os.environ:
-    SECRET_KEY = config('SECRET_KEY')
-else:
-    from django.core.management.utils import get_random_secret_key
-    SECRET_KEY = get_random_secret_key()
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=Csv())
 
@@ -69,29 +63,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'invoice_backend.wsgi.application'
 
-DATABASE_URL = config('DATABASE_URL', default='')
+DATABASE_URL = config('DATABASE_URL')
 
-if DATABASE_URL:
-    from urllib.parse import urlparse
-    parsed_url = urlparse(DATABASE_URL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': parsed_url.path[1:],
-            'USER': parsed_url.username,
-            'PASSWORD': parsed_url.password,
-            'HOST': parsed_url.hostname,
-            'PORT': parsed_url.port or '5432',
-        }
+from urllib.parse import urlparse
+parsed_url = urlparse(DATABASE_URL)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': parsed_url.path[1:],
+        'USER': parsed_url.username,
+        'PASSWORD': parsed_url.password,
+        'HOST': parsed_url.hostname,
+        'PORT': parsed_url.port or '5432',
     }
-else:
-    # Fall back to SQLite for development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
