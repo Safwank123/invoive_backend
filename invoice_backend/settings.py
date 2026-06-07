@@ -1,10 +1,16 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY: use env var if set, otherwise generate random for development
+if 'SECRET_KEY' in os.environ:
+    SECRET_KEY = config('SECRET_KEY')
+else:
+    from django.core.management.utils import get_random_secret_key
+    SECRET_KEY = get_random_secret_key()
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=Csv())
 
